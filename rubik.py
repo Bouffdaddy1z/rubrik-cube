@@ -5,24 +5,28 @@ class RubiksCubeSolverApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Rubik's Cube Solver")
-        self.steps = [
-            "Step 1: Solve the White Cross",
-            "Step 2: Solve the White Corners",
-            "Step 3: Solve the Middle Layer Edges",
-            "Step 4: Solve the Yellow Cross",
-            "Step 5: Solve the Yellow Corners",
-            "Step 6: Solve the Final Layer Edges"
-        ]
         
+        self.steps = {
+            "Initialize Rubik's Cube": "Start by ensuring the cube is properly scrambled and ready to be solved systematically.",
+            "Solve First Layer": "Align the white edges, match center colors, and position corners correctly to form a complete white layer.",
+            "Solve Second Layer": "Find and insert the correct edge pieces into the second layer without disturbing the first layer.",
+            "Solve Yellow Cross": "Orient the yellow edges correctly to form a cross on the top face of the cube.",
+            "Solve Yellow Corners": "Position and orient the yellow corners correctly to complete the yellow face.",
+            "Position Yellow Corners": "Move yellow corners into their correct locations while maintaining the yellow cross.",
+            "Orient Yellow Corners": "Rotate the yellow corners correctly to align all colors.",
+            "Finish Cube": "Position and orient the remaining edges to fully solve the Rubik's Cube.",
+        }
+
         self.label = tk.Label(root, text="Welcome to the Rubik's Cube Solver!", font=("Arial", 14))
         self.label.pack(pady=10)
         
-        self.step_label = tk.Label(root, text="Select a step to get instructions or start solving:")
+        self.step_label = tk.Label(root, text="Select a step to get instructions:")
         self.step_label.pack()
         
-        self.step_var = tk.StringVar()
-        self.step_entry = tk.Entry(root, textvariable=self.step_var)
-        self.step_entry.pack()
+        self.step_listbox = tk.Listbox(root, height=len(self.steps))
+        for step in self.steps.keys():
+            self.step_listbox.insert(tk.END, step)
+        self.step_listbox.pack(pady=5)
         
         self.get_step_button = tk.Button(root, text="Get Step", command=self.get_step)
         self.get_step_button.pack(pady=5)
@@ -30,22 +34,22 @@ class RubiksCubeSolverApp:
         self.solve_button = tk.Button(root, text="Start Solving", command=self.solve)
         self.solve_button.pack(pady=5)
         
+        self.close_button = tk.Button(root, text="Close", command=root.quit)
+        self.close_button.pack(pady=5)
+        
     def get_step(self):
-        """Displays the instruction for the given step number."""
-        step_number = self.step_var.get()
-        if step_number.isdigit():
-            step_number = int(step_number)
-            if 1 <= step_number <= len(self.steps):
-                messagebox.showinfo("Step Instruction", self.steps[step_number - 1])
-            else:
-                messagebox.showerror("Error", "Invalid step number. Enter a number between 1 and 6.")
+        """Displays the instruction for the selected step."""
+        selected_index = self.step_listbox.curselection()
+        if selected_index:
+            step_name = self.step_listbox.get(selected_index)
+            messagebox.showinfo("Step Instruction", self.steps[step_name])
         else:
-            messagebox.showerror("Error", "Please enter a valid number.")
+            messagebox.showerror("Error", "Please select a step from the list.")
     
     def solve(self):
         """Guides the user through solving the cube step by step interactively."""
-        for step in self.steps:
-            messagebox.showinfo("Solving Step", step)
+        for step, instruction in self.steps.items():
+            messagebox.showinfo("Solving Step", f"{step}:\n{instruction}")
         messagebox.showinfo("Congratulations!", "You have solved the Rubik's Cube!")
 
 if __name__ == "__main__":
